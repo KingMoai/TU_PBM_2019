@@ -1,3 +1,4 @@
+##use professor code
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
