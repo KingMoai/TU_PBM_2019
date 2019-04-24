@@ -11,6 +11,10 @@ import common
 class HoverCraft :
 
     def __init__(self):
+        #조종을 위한 상태
+        self.push = 0 # 0 ~ 4
+        self.right = 0 # -3 ~ 3
+
         # constants
         self.Cd  = 2.0
         self.Cdr = 2.0
@@ -28,9 +32,9 @@ class HoverCraft :
         self.I = 2.0*self.mass/3.
 
 
-        self.engines = [False,False,False,False]
+        self.engines = [True, True, True, True]
         self.engineLoc = np.array([[-1.,1.,0.],[1.,1.,0.],[-1.,-1.,0.],[1.,-1.,0.]])
-        self.engineForce = np.array([[1.,0.,0.],[-1.,0.,0.],[0.,3.,0.],[0.,3.,0.]])
+        self.engineForce = np.array([[0.,0.,0.],[0.,0.,0.],[0.,0., 0.],[0.,0.,0.]])
         print(self.engineLoc[0])
 
         return
@@ -97,6 +101,23 @@ class HoverCraft :
         # 회전운동 수치적분
         self.aVel += self.aAcc * dt
         self.angle += self.aVel * dt
+
+        print(self.push, self.right)
+
+    def AddPush(self, val): #자연스러운 키 입력을 위해 전진
+        self.push += val
+        self.engineForce[2] = np.array([0., self.push, 0.])
+        self.engineForce[3] = np.array([0., self.push, 0.])
+
+    def AddRight(self, val): #자연스러운
+        self.right += val
+        if self.right > 0:
+            self.engineForce[0] = np.array([self.right, 0., 0.])
+        elif self.right < 0:
+            self.engineForce[1] = np.array([self.right, 0., 0.])
+        elif self.right == 0:
+            self.engineForce[0] = np.array([0., 0., 0.])
+            self.engineForce[1] = np.array([0., 0., 0.])
 
     def engineSwitch(self, swNo):
         idx = swNo - 1
